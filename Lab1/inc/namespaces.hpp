@@ -1,7 +1,6 @@
 #pragma once
 
 # include <map>
-# include <locale>
 # include <algorithm>
 # include <fstream>
 # include <iostream>
