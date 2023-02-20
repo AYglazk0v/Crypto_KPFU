@@ -1,6 +1,5 @@
-#include "encryption.hpp"
-#include <codecvt>
-#include <ios>
+#include "namespaces.hpp"
+
 #include <locale>
 #include <map>
 #include <random>
