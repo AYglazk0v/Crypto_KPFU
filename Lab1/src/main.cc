@@ -1,5 +1,5 @@
 #include <iostream>
-#include "namespaces.hpp"
+#include "../inc/namespaces.hpp"
 
 int main() 
 {

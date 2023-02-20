@@ -1,4 +1,4 @@
-#include "namespaces.hpp"
+#include "../inc/namespaces.hpp"
 
 #include <random>
 
@@ -34,7 +34,7 @@ namespace {
 
     void cryptoFile_(std::map<wchar_t, wchar_t>& key, std::wifstream& file)
     {
-        std::wofstream f("encrypted.txt", std::ios::trunc);
+        std::wofstream f("./return/encrypted.txt", std::ios::trunc);
         if (f.is_open()) {
             f.imbue(std::locale("ru_RU.UTF-8"));
 
@@ -60,7 +60,7 @@ namespace {
 
     void keyFile_(std::map<wchar_t, wchar_t>& key)
     {
-        std::wofstream f("key.txt", std::ios::trunc);
+        std::wofstream f("./return/key.txt", std::ios::trunc);
         if (f.is_open()) {
             f.imbue(std::locale("ru_RU.UTF-8"));
             for (auto curr : key) {

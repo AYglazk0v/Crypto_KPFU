@@ -1,4 +1,4 @@
-#include "namespaces.hpp"
+#include "../inc/namespaces.hpp"
 
 namespace {
     std::map<wchar_t, wchar_t> scanKey_()
@@ -14,7 +14,7 @@ namespace {
             std::wstring line;
             while (std::getline(f, line)) {
                 if (line.begin() != line.end() - 1) {
-                    retKey[*line.begin()] = *(line.end() - 1);
+                    retKey[*(line.end() - 1)] = *line.begin();
                 }
             }
         }
@@ -33,7 +33,7 @@ namespace {
         if (fileIn.is_open()) {
             fileIn.imbue(std::locale("ru_RU.UTF-8"));
             
-            std::wofstream fileOut("decrypted.txt", std::ios::trunc);
+            std::wofstream fileOut("./return/decrypted.txt", std::ios::trunc);
             if (fileOut.is_open()) {
                 fileOut.imbue(std::locale("ru_RU.UTF-8"));
                 
