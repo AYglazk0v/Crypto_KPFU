@@ -24,7 +24,7 @@ namespace {
         int sz_alpha = alpha.size() - 1;
         for (auto it = retAlpha.begin(), ite = retAlpha.end(); it != ite; ++it)
         {
-            int index_remove_c = random_(0, sz_alpha);
+            int index_remove_c = random_(1, sz_alpha);
             (*it).second = alpha[index_remove_c];
             alpha.erase(std::remove(alpha.begin(), alpha.end(), alpha[index_remove_c]), alpha.end());
             sz_alpha--;
