@@ -7,7 +7,7 @@
 #include <fstream>
 #include <vector>
 
-namespace NSRegister {
+namespace Generator {
 	class Register final {
 		private:
 			ParserSettings::Settings settings_;

@@ -2,6 +2,6 @@
 #include "../inc/namespaces.hpp"
 
 int main(int argc, char** argv) {
-	NSRegister::Register reg(argc, argv);
+	Generator::Register reg(argc, argv);
 	return 0;
 }

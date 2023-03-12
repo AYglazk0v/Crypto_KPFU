@@ -1,6 +1,6 @@
 #include "../inc/namespaces.hpp"
 
-namespace NSRegister {
+namespace Generator {
 
 	void Register::parsePoly() {
 		const std::string tmp = settings_.getPoly();
@@ -27,7 +27,7 @@ namespace NSRegister {
 			digits_.reserve(s.size());
 			std::for_each(s.rbegin(), s.rend(), [this](char c){digits_.push_back(c == '1');});
 			f.close();
-		}else {
+		} else {
 			throw std::runtime_error("Could not open the file");
 		}
 	}
