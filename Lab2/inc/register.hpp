@@ -8,24 +8,24 @@
 #include <vector>
 
 namespace NSRegister {
-    class Register final {
-        private:
-            ParserSettings::Settings settings_;
-            std::vector<int> polynome_;
-            boost::dynamic_bitset<> digits_;
-        public:
-            Register(int argc, char** argv);
-            ~Register() = default;
-            
-            Register(const Register&) = delete;
-            Register(Register&&) = delete;
-            Register& operator=(const Register&) = delete;
-            Register& operator=(Register&&) = delete;            
-        
-        private:
-            void readFile();
-            void genDigits();
-            void parsePoly();
+	class Register final {
+		private:
+			ParserSettings::Settings settings_;
+			std::vector<int> polynome_;
+			boost::dynamic_bitset<> digits_;
+		public:
+			Register(int argc, char** argv);
+			~Register() = default;
+			
+			Register(const Register&) = delete;
+			Register(Register&&) = delete;
+			Register& operator=(const Register&) = delete;
+			Register& operator=(Register&&) = delete;            
+		
+		private:
+			void readFile();
+			void genDigits();
+			void parsePoly();
 
-    };
+	};
 } //Register
