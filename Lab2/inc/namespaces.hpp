@@ -2,4 +2,4 @@
 
 #include <iostream>
 #include "settings.hpp"
-#include "register.hpp"
+#include "generator.hpp"
