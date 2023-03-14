@@ -1,8 +1,8 @@
 #include "../inc/namespaces.hpp"
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
 #include <set>
-#include <string>
-#include <vector>
+#include <stack>
+
 
 namespace Generator {
 
@@ -53,9 +53,25 @@ namespace Generator {
 	}
 
 	void Register::generationMseq() {
-		std::string s_Mseq;
 		std::set<boost::dynamic_bitset<>> findContain;
-		boost::dynamic_bitset<> curr;
+		std::stack<bool> s;
+		int ret_xor;
 		
+		s.push(digits_[0]);
+		while (findContain.count(digits_) == 0) {
+			findContain.insert(digits_);
+			bool ret_xor = 0;
+			for (auto c : polynome_){
+				ret_xor ^= digits_[c - 1];
+			}
+			digits_ >> 1;
+			digits_[digits_.size() - 1] = ret_xor;
+			s.push(digits_[0]);
+		}
+		
+		while (!s.empty()) {
+			MSeq_.push_back(s.top());
+			s.pop();
+		}
 	}
 }

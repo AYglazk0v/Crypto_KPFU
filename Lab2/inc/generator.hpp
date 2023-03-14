@@ -14,7 +14,7 @@ namespace Generator {
 			ParserSettings::Settings settings_;
 			std::vector<int> polynome_;
 			boost::dynamic_bitset<> digits_;
-			boost::dynamic_bitset<> MSeq;
+			boost::dynamic_bitset<> MSeq_;
 
 		public:
 			Register(int argc, char** argv);
