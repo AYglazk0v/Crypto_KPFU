@@ -5,6 +5,7 @@
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
 #include <fstream>
+#include <optional>
 #include <vector>
 
 namespace Generator {
@@ -13,6 +14,8 @@ namespace Generator {
 			ParserSettings::Settings settings_;
 			std::vector<int> polynome_;
 			boost::dynamic_bitset<> digits_;
+			boost::dynamic_bitset<> MSeq;
+
 		public:
 			Register(int argc, char** argv);
 			~Register() = default;
@@ -26,6 +29,7 @@ namespace Generator {
 			void readFile();
 			void genDigits();
 			void parsePoly();
+			void generationMseq();
 
 	};
 } //Register

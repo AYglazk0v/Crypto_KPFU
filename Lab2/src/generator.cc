@@ -1,4 +1,8 @@
 #include "../inc/namespaces.hpp"
+#include <boost/dynamic_bitset/dynamic_bitset.hpp>
+#include <set>
+#include <string>
+#include <vector>
 
 namespace Generator {
 
@@ -8,6 +12,7 @@ namespace Generator {
 		std::vector<std::string> splt;
 		boost::split(splt, settings_.getPoly(), "+x");
 		std::for_each(splt.begin(), splt.end(), [this](const std::string& s){ if (s != "") polynome_.push_back(std::stoi(s)); });
+		polynome_.pop_back();
 	}
 
 	void Register::genDigits() {
@@ -39,11 +44,18 @@ namespace Generator {
 				settings_.setL(digits_.size());
 			} else {
 				digits_.reserve(settings_.getL());
-
+				genDigits();
 			}
 		} catch (const std::exception& e) {
 			std::cerr << e.what();
 			std::exit(EXIT_FAILURE);
 		}
+	}
+
+	void Register::generationMseq() {
+		std::string s_Mseq;
+		std::set<boost::dynamic_bitset<>> findContain;
+		boost::dynamic_bitset<> curr;
+		
 	}
 }
