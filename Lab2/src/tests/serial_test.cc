@@ -1,12 +1,11 @@
 #include "../../inc/namespaces.hpp"
 #include <algorithm>
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <string>
 #include <unordered_map>
 
 namespace Generator {
     
-    namespace serialTest {
+    namespace Serialtest {
 
         template<typename T1, typename T2> using umap = std::unordered_map<T1, T2>;
 
@@ -21,8 +20,8 @@ namespace Generator {
                 boost::dynamic_bitset<> st_MSeq_;
                 int                     st_k_;
 
-                umap<std::string, int> st_Mseries_;
-                umap<std::string, double> st_Mfreq_;
+                umap<int, int>          st_Mseries_;
+                umap<int, double>       st_Mfreq_;
                 double                  st_hi_;
                 size_t                  st_n_;
                 double                  st_n_t_;
@@ -30,24 +29,85 @@ namespace Generator {
             public:
                 sTest(boost::dynamic_bitset<>& MSeq, int k) : st_MSeq_(MSeq), st_k_(k) {
                     st_n_ = st_MSeq_.size() / st_k_;
+                    countSeries();
+                    countNs();
                 }
 
                 ~sTest() {};
 
+                void run(double alpha) {
+
+                    std::cout << "____________________________\n";
+                    std::cout << "_______SERIAL_TEST__________\n";
+                    std::cout << "____________________________\n";
+                    std::cout << "___ЭМПИРИЧЕСКИЕ_ЧАСТОТЫ_____\n";
+                    for (auto&& curr : st_Mseries_) {
+                        printIntToK(curr.first);
+                        std::cout << " " << curr.second << '\n';
+                    }
+                    std::cout << "_____ЭТАЛОННАЯ_ЧАСТОТА______\n";
+                    std::cout << "N_t =" << st_n_t_ << '\n';
+                    std::cout << "________Критерий_Hi^2_______\n";
+                    std::cout << "Hi^2 =" << st_hi_ << '\n';
+                    std::cout << "____________________________\n";
+                    if (alpha == 0) {
+                        double Hi_min = criticalHi[st_k_][0.1];
+                        double Hi_max = criticalHi[st_k_][0.9];
+                        if (Hi_max <= st_hi_ && Hi_min >= st_hi_) {
+                            std::cout << "_____SERIAL_TEST_PASSED!____\n";
+                        } else {
+                            std::cout << "_____SERIAL_TEST_FAILED!____\n";
+                        }
+                    } else {
+                        double Hi_min = criticalHi[st_k_][alpha];
+                        if (Hi_min >= st_hi_) {
+                            std::cout << "_____SERIAL_TEST_PASSED!____\n";
+                        } else {
+                            std::cout << "_____SERIAL_TEST_FAILED!____\n";
+                        }
+                    }
+                    std::cout << "____________________________\n";
+                }
+
             private:
+
+                void printIntToK(int curr) {
+                    for (int i = st_k_; i != 0; --i) {
+                        std::cout << (curr >> (i - 1) & 1);
+                    }
+                }
+
                 void countSeries() {
-                    
+                    while (st_MSeq_.size() % st_k_ != 0) {
+                        st_MSeq_ = st_MSeq_ >> 1;
+                        st_MSeq_.pop_back();
+                    }
+                    for (size_t s = st_MSeq_.size(), e = 0; s != e; s -= st_k_) {
+                        int tmp = 0;
+                        for (size_t i = 0; i != st_k_; ++i) {
+                            tmp = tmp << 1 | st_MSeq_[s - i - 1];
+                        }
+                        st_Mseries_[tmp]++;
+                    }
+                    for (auto&& curr : st_Mfreq_) {
+                        st_Mfreq_[curr.first] = (0.0 + curr.second) / ((0.0 + st_MSeq_.size()) / st_k_);
+                    }
+
                 }
 
                 void countNs() {
                     st_n_t_ = st_n_ / std::pow(2, st_k_);
-                    std::for_each(st_Mseries_.begin(), st_Mseries_.end(), [this](std::pair<std::string, int>& curr){ 
+                    for (auto&& curr : st_Mseries_){
                         st_hi_ += std::pow(curr.second - st_n_t_, 2) / st_n_t_;
-                    });
+                    }
                 }
-        };
-    };
+
+        };//class sTest
+
+    }; //namespace Serialtest
 
     void Register::serialTest() {
+        Serialtest::sTest tmp{MSeq_, settings_.getSerialK()};
+        tmp.run(settings_.getSerialAlpha());
     };
 }
