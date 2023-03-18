@@ -28,6 +28,8 @@ namespace Generator {
 			void genDigits();
 			void parsePoly();
 			void generationMseq();
+
+		private:
 			void serialTest();
 
 	};
