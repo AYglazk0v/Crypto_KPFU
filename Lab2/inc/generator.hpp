@@ -4,8 +4,6 @@
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
-#include <fstream>
-#include <optional>
 #include <vector>
 
 namespace Generator {
@@ -24,12 +22,13 @@ namespace Generator {
 			Register(Register&&) = delete;
 			Register& operator=(const Register&) = delete;
 			Register& operator=(Register&&) = delete;            
-		
+
 		private:
 			void readFile();
 			void genDigits();
 			void parsePoly();
 			void generationMseq();
+			void serialTest();
 
 	};
 } //Register

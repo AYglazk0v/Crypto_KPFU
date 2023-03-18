@@ -3,7 +3,6 @@
 #include <set>
 #include <stack>
 
-
 namespace Generator {
 
 	void Register::parsePoly() {
