@@ -31,6 +31,7 @@ namespace Generator {
 
 		private:
 			void serialTest();
+			void corrTest();
 
 	};
 } //Register

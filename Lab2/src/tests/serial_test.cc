@@ -66,7 +66,6 @@ namespace Generator {
                             std::cout << "_____SERIAL_TEST_FAILED!____\n";
                         }
                     }
-                    std::cout << "____________________________\n";
                 }
 
             private:
@@ -110,4 +109,5 @@ namespace Generator {
         Serialtest::sTest tmp{MSeq_, settings_.getSerialK()};
         tmp.run(settings_.getSerialAlpha());
     };
-}
+
+}//namespace Generator
