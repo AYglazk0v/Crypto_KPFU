@@ -6,17 +6,18 @@
 namespace Generator {
 
     namespace Corrtest {
+        template<typename T1, typename T2> using umap = std::unordered_map<T1, T2>;
         class cTest{
             private:
                 int k_[4] {1,2,8,9};
-                std::map<int, double> r_;
+                umap<int, double> r_;
             
             public:
                 cTest(){}
                 ~cTest(){}
             
             private:
-                void autoCorr(boost::dynamic_bitset<>& MSeq) {
+                void autoCorr(const boost::dynamic_bitset<>& MSeq) {
                     for (auto curr : k_) {
                         double m_i = 0.0;
                         for (size_t j = 0; j < MSeq.size() - curr; ++j) {
@@ -51,7 +52,7 @@ namespace Generator {
                 }
 
             public:
-                void run(boost::dynamic_bitset<>& MSeq){
+                void run(const boost::dynamic_bitset<>& MSeq){
                     autoCorr(MSeq);
                     double n = MSeq.size();
                     double r_cr = 1.0 /(n-1) + 2.0/(n-2)*std::sqrt((n * (n - 3))/(n + 1));

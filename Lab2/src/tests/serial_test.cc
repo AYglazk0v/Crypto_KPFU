@@ -1,7 +1,4 @@
 #include "../../inc/namespaces.hpp"
-#include <algorithm>
-#include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <unordered_map>
 
 namespace Generator {
     
@@ -9,7 +6,7 @@ namespace Generator {
 
         template<typename T1, typename T2> using umap = std::unordered_map<T1, T2>;
 
-        umap<int, umap<double, double>> criticalHi {
+        static umap<int, umap<double, double>> criticalHi {
             {2, {{0.95, 0.352}, {0.9, 0.584}, {0.8, 1.005}, {0.2, 4.6}, {0.1, 6.251}, {0.05, 7.815}}},
             {3, {{0.95, 2.167}, {0.9, 2.833}, {0.8, 3.28}, {0.2, 9.8}, {0.1, 12.017}, {0.05, 14.057}}},
 		    {4, {{0.95, 7.261}, {0.9, 8.547}, {0.8, 10.31}, {0.2, 19.31}, {0.1, 22.307}, {0.05, 24.996}}}
@@ -27,7 +24,7 @@ namespace Generator {
                 double                  st_n_t_;
             
             public:
-                sTest(boost::dynamic_bitset<>& MSeq, int k) : st_MSeq_(MSeq), st_k_(k) {
+                sTest(const boost::dynamic_bitset<>& MSeq, int k) : st_MSeq_(MSeq), st_k_(k) {
                     st_n_ = st_MSeq_.size() / st_k_;
                     countSeries();
                     countNs();
@@ -35,7 +32,7 @@ namespace Generator {
 
                 ~sTest() {};
 
-                void run(double alpha) {
+                void run(double alpha) const {
 
                     std::cout << "____________________________\n";
                     std::cout << "_______SERIAL_TEST__________\n";
@@ -70,7 +67,7 @@ namespace Generator {
 
             private:
 
-                void printIntToK(int curr) {
+                void printIntToK(int curr) const {
                     for (int i = st_k_; i != 0; --i) {
                         std::cout << (curr >> (i - 1) & 1);
                     }
