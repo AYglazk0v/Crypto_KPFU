@@ -4,6 +4,7 @@
 #include <stack>
 #include <thread>
 #include <fstream>
+#include <vector>
 
 namespace Generator {
 
@@ -75,41 +76,67 @@ namespace Generator {
 		}
 	}
 
+	void Register::MSeq4File(std::string filename) {
+		std::vector<u_char>src = Cypher::readFileBin(filename);
+		MSeq_ = boost::dynamic_bitset<>();
+		MSeq_.reserve(src.size()* 8);
+		for (auto&& c : src) {
+			MSeq_.push_back((c >> 0) & 1);
+			MSeq_.push_back((c >> 1) & 1);
+			MSeq_.push_back((c >> 2) & 1);
+			MSeq_.push_back((c >> 3) & 1);
+			MSeq_.push_back((c >> 4) & 1);
+			MSeq_.push_back((c >> 5) & 1);
+			MSeq_.push_back((c >> 6) & 1);
+			MSeq_.push_back((c >> 7) & 1);
+		}
+	}
+
+	void Register::startTest() {
+		std::thread t1(corrTest, this);
+		std::thread t2(serialTest, this);
+		std::thread t3(pokerTest, this);
+		t1.join();
+		t2.join();
+		t3.join();
+	}
+
 	void Register::runTask() {
 		int curr_status = settings_.getStatusTask();
 		switch (curr_status) {
 			case 1:
-			{
-				std::cout << MSeq_;
-			}
+				std::cout << MSeq_ << '\n';
 				break;
 			case 2:
-			{
-				std::thread t1(corrTest, this);
-				std::thread t2(serialTest, this);
-				std::thread t3(pokerTest, this);
-				t1.join();
-				t2.join();
-				t3.join();
+				startTest();
+				break;
+			case 3:
+				Cypher::encrypt(MSeq_, "binfile");
+				break;
+			case 4: {
+				MSeq4File("binfile");
+				startTest();
 			}
 				break;
-			case 3: {
-
+			case 5:{
+				MSeq4File("encrypted.txt");
+				startTest();
 			}
 				break;
-			case 4:
-			{
+			case 6: {
+				//-----------------------УЗНАТЬ НА ЧТО РАСЧИТАННО ЗАДАНИЕ, ИБО L=8/16 -- ОДНО ЕДИНСТВЕННОЕ ЧИСЛО-------------------------//
+				// size_t L = 8;
+				// size_t sz_MSeq = MSeq_.size();
+				// boost::dynamic_bitset<> tmpSeq_(MSeq_);
+				// tmpSeq_.resize(L);
 
-			}
-				break;
-			case 5:
-			{
+				// size_t i = 0;
+				// while(tmpSeq_.size() < sz_MSeq) {
+				// 	tmpSeq_.push_back(MSeq_[i % L]);
+				// }
+				// MSeq_ = tmpSeq_;
 
-			}
-				break;
-			case 6:
-			{
-
+				// Cypher::encrypt(MSeq_, "binfile");
 			}
 			break;
 		}

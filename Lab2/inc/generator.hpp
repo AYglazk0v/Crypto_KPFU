@@ -4,10 +4,15 @@
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
+#include <string>
 #include <vector>
 #include <mutex>
 
 namespace Generator {
+	namespace Cypher {
+		void encrypt(boost::dynamic_bitset<> MSeq_, std::string);
+        std::vector<u_char> readFileBin(std::string filename);
+	}
 	class Register final {
 		private:
 			ParserSettings::Settings settings_;
@@ -29,10 +34,12 @@ namespace Generator {
 			void runTask();
 
 		private:
+			void startTest();
 			void readFile();
 			void genDigits();
 			void parsePoly();
 			void generationMseq();
+			void MSeq4File(std::string);
 
 		private:
 			static void serialTest(const Register& r);
