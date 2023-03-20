@@ -12,6 +12,7 @@ namespace ParserSettings {
 			("poly", po::value<std::string>(&poly_)->default_value("x4+x1+1"), "Polynom for feedback function")
 			("N", po::value<int>(&N_)->default_value(-1), "Result size")
 			("file", po::value<std::string>(&keyFile_)->default_value(""), "File to store key")
+			("test", po::value<int>(&task_)->default_value(1), "Register size")
 			("serialK", po::value<int>(&serialK_)->default_value(2), "Serial Test K")
 			("serialAlpha",po::value<double>(&serialAlpha_)->default_value(0), "Serial Test alpha")
 			("pokerAlpha", po::value<double>(&pokerAlpha_)->default_value(0), "Poker Test alpha");

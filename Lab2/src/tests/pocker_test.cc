@@ -79,7 +79,7 @@ namespace Generator {
                 }
 
             public:
-                void run(const boost::dynamic_bitset<>& MSeq, double alpha) {
+                void run(const boost::dynamic_bitset<>& MSeq, double alpha, std::mutex& mtx_) {
                     makeCount(MSeq);
                     double p[7];
 
@@ -96,6 +96,7 @@ namespace Generator {
                         hi_ += std::pow(count_[i] - p[i], 2) / p[i];
                     }
 
+                    std::lock_guard<std::mutex> lock(mtx_);
                     std::cout << "____________________________\n";
                     std::cout << "_________POKER_TEST_________\n";
                     std::cout << "____________________________\n";
@@ -126,9 +127,9 @@ namespace Generator {
         }; //class pTest
     }//namespace Pokertest
 
-    void Register::pokerTest() {
+    void Register::pokerTest(const Register&r) {
         Pokertest::pTest tmp{};
-        tmp.run(MSeq_, settings_.getPokerAlpha());
+        tmp.run(r.MSeq_, r.settings_.getPokerAlpha(), mtx_);
     }
 
 } //namespace Generator

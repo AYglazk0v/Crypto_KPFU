@@ -5,9 +5,10 @@ namespace ParserSettings {
 	class Settings final {
 		private:
 			size_t L_;
-			int N_, serialK_;
-			double serialAlpha_, pokerAlpha_;
+			int 		N_, serialK_;
+			double 		serialAlpha_, pokerAlpha_;
 			std::string poly_, keyFile_;
+			int 		task_;
 
 		public:
 			Settings(int argc, char** argv);
@@ -20,6 +21,7 @@ namespace ParserSettings {
 		public:
 			size_t getL() const				{ return L_; }
 			int getN() const				{ return N_; }
+			int getStatusTask() const		{ return task_; }
 			int getSerialK() const			{ return serialK_; }
 			double getSerialAlpha() const	{ return serialAlpha_; }
 			double getPokerAlpha() const	{ return pokerAlpha_; }

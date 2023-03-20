@@ -2,6 +2,8 @@
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
 #include <set>
 #include <stack>
+#include <thread>
+#include <fstream>
 
 namespace Generator {
 
@@ -28,8 +30,7 @@ namespace Generator {
 			while (std::getline(f,tmp)) {
 				s += tmp;
 			}
-			digits_.reserve(s.size());
-			std::for_each(s.rbegin(), s.rend(), [this](char c){digits_.push_back(c == '1');});
+			digits_ = boost::dynamic_bitset<>(s);
 			f.close();
 		} else {
 			throw std::runtime_error("Could not open the file");
@@ -71,6 +72,46 @@ namespace Generator {
 		while (!s.empty()) {
 			MSeq_.push_back(s.top());
 			s.pop();
+		}
+	}
+
+	void Register::runTask() {
+		int curr_status = settings_.getStatusTask();
+		switch (curr_status) {
+			case 1:
+			{
+				std::cout << MSeq_;
+			}
+				break;
+			case 2:
+			{
+				std::thread t1(corrTest, this);
+				std::thread t2(serialTest, this);
+				std::thread t3(pokerTest, this);
+				t1.join();
+				t2.join();
+				t3.join();
+			}
+				break;
+			case 3: {
+
+			}
+				break;
+			case 4:
+			{
+
+			}
+				break;
+			case 5:
+			{
+
+			}
+				break;
+			case 6:
+			{
+
+			}
+			break;
 		}
 	}
 }

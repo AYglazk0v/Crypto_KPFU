@@ -32,8 +32,9 @@ namespace Generator {
 
                 ~sTest() {};
 
-                void run(double alpha) const {
+                void run(double alpha, std::mutex& mtx_) const {
 
+                    std::lock_guard<std::mutex> lock(mtx_);
                     std::cout << "____________________________\n";
                     std::cout << "_______SERIAL_TEST__________\n";
                     std::cout << "____________________________\n";
@@ -102,9 +103,9 @@ namespace Generator {
 
     }; //namespace Serialtest
 
-    void Register::serialTest() {
-        Serialtest::sTest tmp{MSeq_, settings_.getSerialK()};
-        tmp.run(settings_.getSerialAlpha());
+    void Register::serialTest(const Register& r) {
+        Serialtest::sTest tmp{r.MSeq_, r.settings_.getSerialK()};
+        tmp.run(r.settings_.getSerialAlpha(), mtx_);
     };
 
 }//namespace Generator

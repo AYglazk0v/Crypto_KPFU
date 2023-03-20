@@ -1,7 +1,5 @@
 #include "../../inc/namespaces.hpp"
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <cmath>
-#include <cstddef>
 
 namespace Generator {
 
@@ -52,10 +50,11 @@ namespace Generator {
                 }
 
             public:
-                void run(const boost::dynamic_bitset<>& MSeq){
+                void run(const boost::dynamic_bitset<>& MSeq, std::mutex& mtx_){
                     autoCorr(MSeq);
                     double n = MSeq.size();
                     double r_cr = 1.0 /(n-1) + 2.0/(n-2)*std::sqrt((n * (n - 3))/(n + 1));
+                    std::lock_guard<std::mutex> lock(mtx_);
                     std::cout << "____________________________\n";
                     std::cout << "__________CORR_TEST_________\n";
                     std::cout << "____________________________\n";
@@ -81,9 +80,9 @@ namespace Generator {
 
     } //namespace Corrtest
 
-    void Register::corrTest() {
+    void Register::corrTest(const Register& r) {
         Corrtest::cTest tmp{};
-        tmp.run(MSeq_);
+        tmp.run(r.MSeq_, mtx_);
     }
 
 }//namespace Generator

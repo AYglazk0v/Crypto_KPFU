@@ -5,6 +5,7 @@
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
 #include <vector>
+#include <mutex>
 
 namespace Generator {
 	class Register final {
@@ -13,6 +14,7 @@ namespace Generator {
 			std::vector<int> polynome_;
 			boost::dynamic_bitset<> digits_;
 			boost::dynamic_bitset<> MSeq_;
+			static std::mutex mtx_;
 
 		public:
 			Register(int argc, char** argv);
@@ -23,6 +25,9 @@ namespace Generator {
 			Register& operator=(const Register&) = delete;
 			Register& operator=(Register&&) = delete;            
 
+		public:
+			void runTask();
+
 		private:
 			void readFile();
 			void genDigits();
@@ -30,9 +35,9 @@ namespace Generator {
 			void generationMseq();
 
 		private:
-			void serialTest();
-			void pokerTest();
-			void corrTest();
+			static void serialTest(const Register& r);
+			static void pokerTest(const Register& r);
+			static void corrTest(const Register& r);
 
 	};
 } //Register
