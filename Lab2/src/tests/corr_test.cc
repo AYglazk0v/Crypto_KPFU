@@ -1,13 +1,17 @@
 #include "../../inc/namespaces.hpp"
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
+#include <vector>
 
 namespace Generator {
 
     namespace Corrtest {
         template<typename T1, typename T2> using umap = std::unordered_map<T1, T2>;
-        class cTest{
+        class cTest final{
+            
+            friend class Generator::Register;
+            
             private:
-                int k_[4] {1,2,8,9};
+                std::vector<int> k_{1,2,8,9};
                 umap<int, double> r_;
             
             public:
@@ -83,6 +87,15 @@ namespace Generator {
     void Register::corrTest(const Register& r) {
         Corrtest::cTest tmp{};
         tmp.run(r.MSeq_, mtx_);
+    }
+
+    void Register::crutches() {
+        Corrtest::cTest tmp{};
+        tmp.k_ = std::vector<int>{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+        tmp.autoCorr(MSeq_);
+        for (auto&& curr : tmp.r_) {
+            std::cout << "R[" << curr.first << "]: " << curr.second << '\n'; 
+        }
     }
 
 }//namespace Generator

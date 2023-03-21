@@ -46,5 +46,8 @@ namespace Generator {
 			static void pokerTest(const Register& r);
 			static void corrTest(const Register& r);
 
+		private:
+			void crutches();
+
 	};
 } //Register

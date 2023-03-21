@@ -124,19 +124,30 @@ namespace Generator {
 			}
 				break;
 			case 6: {
-				//-----------------------УЗНАТЬ НА ЧТО РАСЧИТАННО ЗАДАНИЕ, ИБО L=8/16 -- ОДНО ЕДИНСТВЕННОЕ ЧИСЛО-------------------------//
-				// size_t L = 8;
-				// size_t sz_MSeq = MSeq_.size();
-				// boost::dynamic_bitset<> tmpSeq_(MSeq_);
-				// tmpSeq_.resize(L);
+				std::vector<u_char>src = Cypher::readFileBin("binfile");
+				MSeq_.resize(8);
+				u_char curr;
+				for (int s = MSeq_.size(), e = 0; s != e; --s) {
+					curr = curr << 1 | MSeq_[s];
+				}
 
-				// size_t i = 0;
-				// while(tmpSeq_.size() < sz_MSeq) {
-				// 	tmpSeq_.push_back(MSeq_[i % L]);
-				// }
-				// MSeq_ = tmpSeq_;
-
-				// Cypher::encrypt(MSeq_, "binfile");
+				std::vector<u_char> encrypted(src.size());
+				for (size_t s = 0, e = src.size(); s != e; ++s) {
+					encrypted[s] = curr ^ src[s];
+				}
+				MSeq_ = boost::dynamic_bitset<>();
+				MSeq_.reserve(encrypted.size()* 8);
+				for (auto&& c : encrypted) {
+					MSeq_.push_back((c >> 0) & 1);
+					MSeq_.push_back((c >> 1) & 1);
+					MSeq_.push_back((c >> 2) & 1);
+					MSeq_.push_back((c >> 3) & 1);
+					MSeq_.push_back((c >> 4) & 1);
+					MSeq_.push_back((c >> 5) & 1);
+					MSeq_.push_back((c >> 6) & 1);
+					MSeq_.push_back((c >> 7) & 1);
+				}
+				crutches();
 			}
 			break;
 		}
