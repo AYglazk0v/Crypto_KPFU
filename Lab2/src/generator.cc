@@ -135,6 +135,7 @@ namespace Generator {
 				for (size_t s = 0, e = src.size(); s != e; ++s) {
 					encrypted[s] = curr ^ src[s];
 				}
+
 				MSeq_ = boost::dynamic_bitset<>();
 				MSeq_.reserve(encrypted.size()* 8);
 				for (auto&& c : encrypted) {
@@ -147,9 +148,10 @@ namespace Generator {
 					MSeq_.push_back((c >> 6) & 1);
 					MSeq_.push_back((c >> 7) & 1);
 				}
+				
 				crutches();
 			}
 			break;
 		}
 	}
-}
+} //namespace Genirator
