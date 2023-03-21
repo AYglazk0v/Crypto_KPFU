@@ -1,4 +1,7 @@
-#include "../../inc/namespaces.hpp"
+#include "../inc/namespaces.hpp"
+#include <iostream>
+#include <mutex>
+#include <sstream>
 
 namespace Generator {
 
@@ -33,7 +36,7 @@ namespace Generator {
                         for (size_t i = 0; i != 32; ++i){
                             curr = curr << 1 | tmp[s - i - 1];
                         }
-                        curr = (0.0 + curr) / (std::pow(2,32) - 1) * 10;
+                        curr = (0.0 + curr) / (std::pow(2,32) - 1) * q_;
                         if (curr != 10) {
                             u_.push_back(static_cast<uint8_t>(curr));
                         } else {
@@ -79,7 +82,7 @@ namespace Generator {
                 }
 
             public:
-                void run(const boost::dynamic_bitset<>& MSeq, double alpha, std::mutex& mtx_) {
+                void run(const boost::dynamic_bitset<>& MSeq, double alpha) {
                     makeCount(MSeq);
                     double p[7];
 
@@ -91,45 +94,48 @@ namespace Generator {
                 	p[5] = (0.0045 * MSeq.size() / 160);
                 	p[6] = (0.0001 * MSeq.size() / 160);
 
-                    std::cout << u_.size();
+                    hi_ = 0.0;
                     for (int i = 0; i < 7; ++i) {
                         hi_ += std::pow(count_[i] - p[i], 2) / p[i];
                     }
 
-                    std::lock_guard<std::mutex> lock(mtx_);
-                    std::cout << "____________________________\n";
-                    std::cout << "_________POKER_TEST_________\n";
-                    std::cout << "____________________________\n";
-                    std::cout << "_ЭМПИР_И_ЭТАЛОННЫЕ_ЧАСТОТЫ__\n";
+                    std::stringstream s;
+                    s << "____________________________\n";
+                    s << "_________POKER_TEST_________\n";
+                    s << "____________________________\n";
+                    s << "_ЭМПИР_И_ЭТАЛОННЫЕ_ЧАСТОТЫ__\n";
                     for (int i = 0; i < 7; ++i) {
-                        std::cout << "N_" << i << "=" << count_[i] << "\t--\tP_" << i << "=" << p[i] << std::endl;
+                        s << "N_" << i << "=" << count_[i] << "\t--\tP_" << i << "=" << p[i] << std::endl;
                     }
-                    std::cout << "________Критерий_Hi^2_______\n";
-                    std::cout << "Hi^2 =" << hi_ << '\n';
-                    std::cout << "____________________________\n";
+                    s << "________Критерий_Hi^2_______\n";
+                    s << "Hi^2 =" << hi_ << '\n';
+                    s << "____________________________\n";
                     if (alpha == 0.0) {
                         double Hi_max = criticalHi[0.9];
                         double Hi_min = criticalHi[0.1];
                         if (Hi_max <= hi_ && Hi_min >= hi_) {
-                            std::cout << "______POKER_TEST_PASSED!____\n";
+                            s << "______POKER_TEST_PASSED!____\n";
                         } else {
-                            std::cout << "______POKER_TEST_FAILED!____\n";
+                            s << "______POKER_TEST_FAILED!____\n";
                         }
                     } else {
                         double Hi_min = criticalHi[alpha];
                         if (Hi_min >= hi_) {
-                            std::cout << "______POKER_TEST_PASSED!____\n";
+                            s << "______POKER_TEST_PASSED!____\n";
                         } else {
-                            std::cout << "______POKER_TEST_FAILED!____\n";
+                            s << "______POKER_TEST_FAILED!____\n";
                         }
                     }
+                    s << "____________________________\n\n";
+                    std::lock_guard<std::mutex> lock(Generator::mtx_);
+                    std::cout << s.str();
                 }
         }; //class pTest
     }//namespace Pokertest
 
-    void Register::pokerTest(const Register&r) {
+    void Register::pokerTest() {
         Pokertest::pTest tmp{};
-        tmp.run(r.MSeq_, r.settings_.getPokerAlpha(), mtx_);
+        tmp.run(MSeq_, settings_.getPokerAlpha());
     }
 
 } //namespace Generator

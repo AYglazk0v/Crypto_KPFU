@@ -1,6 +1,4 @@
-#include "../../inc/namespaces.hpp"
-#include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <vector>
+#include "../inc/namespaces.hpp"
 
 namespace Generator {
 
@@ -12,7 +10,7 @@ namespace Generator {
             
             private:
                 std::vector<int> k_{1,2,8,9};
-                umap<int, double> r_;
+                std::map<int, double> r_;
             
             public:
                 cTest(){}
@@ -35,58 +33,63 @@ namespace Generator {
 
                         double d_i = 0.0;
                         for (size_t j = 0; j < MSeq.size() - curr; ++j) {
-                            d_i += std::pow(MSeq[j]-m_i, 2);
+                            d_i += std::pow(MSeq[j] - m_i, 2);
                         }
                         d_i *= 1.0 / (MSeq.size() - curr - 1);
 
                         double d_i_k = 0.0;
                         for (size_t j = 0; j < MSeq.size(); ++j) {
-                            d_i_k += std::pow(MSeq.size() - m_i_k, 2);
+                            d_i_k += std::pow(MSeq[j] - m_i_k, 2);
                         }
                         d_i_k *= 1.0 / (MSeq.size() - curr - 1);
 
                         for (size_t j = 0; j < MSeq.size() - curr; ++j){
                             r_[curr] += (MSeq[j] - m_i) * (MSeq[j + curr] - m_i_k);
                         }
-                        r_[curr] /= (MSeq.size() - curr) * std::sqrt(d_i *d_i_k);
+                        r_[curr] /= (MSeq.size() - curr);
+                        r_[curr] /= std::sqrt(d_i *d_i_k);
                         r_[curr] = std::abs(r_[curr]);
                     }
                 }
 
             public:
-                void run(const boost::dynamic_bitset<>& MSeq, std::mutex& mtx_){
+                void run(const boost::dynamic_bitset<>& MSeq){
                     autoCorr(MSeq);
                     double n = MSeq.size();
-                    double r_cr = 1.0 /(n-1) + 2.0/(n-2)*std::sqrt((n * (n - 3))/(n + 1));
-                    std::lock_guard<std::mutex> lock(mtx_);
-                    std::cout << "____________________________\n";
-                    std::cout << "__________CORR_TEST_________\n";
-                    std::cout << "____________________________\n";
+                    double r_cr = 1.0 /(n-1) + 2.0/(n - 2) * std::sqrt((n * (n - 3))/(n + 1));
+                    
+                    std::stringstream s;
+                    s << "____________________________\n";
+                    s << "__________CORR_TEST_________\n";
+                    s << "____________________________\n";
                     bool pass = true;
-                    std::cout << "_АВТОКОРРЕЛЯЦИОННАЯ_ФУНКЦИЯ_\n";
+                    s << "_АВТОКОРРЕЛЯЦИОННАЯ_ФУНКЦИЯ_\n";
                     for (auto&& curr : r_) {
                         if (curr.second > r_cr) {
                             pass = false;
                         }
-                        std::cout << "R[" << curr.first << "]: " << curr.second << '\n'; 
+                        s << "R[" << curr.first << "]: " << curr.second << '\n'; 
                     }
-                    std::cout << "____________________________\n";
-                    std::cout << "_____КРИТИЧЕСКОЕ_ЗНАЧЕНИЕ___\n";
-                    std::cout << "R[k]_cr: " << r_cr;
-                    std::cout << "____________________________\n";
+                    s << "____________________________\n";
+                    s << "_____КРИТИЧЕСКОЕ_ЗНАЧЕНИЕ___\n";
+                    s << "R[k]_cr: " << r_cr << '\n';
+                    s << "____________________________\n";
                     if (pass){
-                        std::cout << "____CORR_TEST_PASSED!___\n";
+                       s << "_____CORR_TEST_PASSED!______\n";
                     } else {
-                        std::cout << "____CORR_TEST_FAILED!___\n";
+                       s << "_____CORR_TEST_FAILED!______\n";
                     }
+                    s << "____________________________\n\n";
+                    std::lock_guard<std::mutex> lock(Generator::mtx_);
+                    std::cout << s.str();
                 }
         }; //class cTest
 
     } //namespace Corrtest
 
-    void Register::corrTest(const Register& r) {
+    void Register::corrTest() {
         Corrtest::cTest tmp{};
-        tmp.run(r.MSeq_, mtx_);
+        tmp.run(MSeq_);
     }
 
     void Register::crutches() {

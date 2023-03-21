@@ -19,6 +19,7 @@ namespace ParserSettings {
 	
 			po::variables_map vm;
 			po::store(po::parse_command_line(argc, argv, desc), vm);
+			po::notify(vm);
 
 			if (vm.count("help")) {
 				std::cout << desc << '\n';

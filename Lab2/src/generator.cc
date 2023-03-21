@@ -1,23 +1,28 @@
 #include "../inc/namespaces.hpp"
+#include <algorithm>
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
+#include <iterator>
 #include <set>
 #include <stack>
 #include <thread>
 #include <fstream>
 #include <vector>
-
 namespace Generator {
+
+	using namespace std::literals::string_literals; 
 
 	void Register::parsePoly() {
 		const std::string tmp = settings_.getPoly();
 		polynome_.reserve(std::count_if(tmp.begin(), tmp.end(), [](char c){return c == '+';}) + 1);
 		std::vector<std::string> splt;
-		boost::split(splt, settings_.getPoly(), "+x");
+		boost::split(splt, settings_.getPoly(), boost::is_any_of("+x"));
 		std::for_each(splt.begin(), splt.end(), [this](const std::string& s){ if (s != "") polynome_.push_back(std::stoi(s)); });
 		polynome_.pop_back();
 	}
 
 	void Register::genDigits() {
+		std::srand((unsigned) time(NULL));
 		for (size_t i = 0, end = settings_.getL(); i != end; ++i) {
 			digits_[i] = std::rand() % 2;
 		}
@@ -40,13 +45,15 @@ namespace Generator {
 
 	Register::Register(int argc, char** argv) : settings_(argc,argv) {
 		try {
-			if (settings_.getKeyFile() != "") {
+			if (!settings_.getKeyFile().empty()) {
 				readFile();
 				settings_.setL(digits_.size());
 			} else {
-				digits_.reserve(settings_.getL());
+				digits_.resize(settings_.getL());
 				genDigits();
 			}
+			parsePoly();
+			generationMseq();
 		} catch (const std::exception& e) {
 			std::cerr << e.what();
 			std::exit(EXIT_FAILURE);
@@ -65,7 +72,7 @@ namespace Generator {
 			for (auto c : polynome_){
 				ret_xor ^= digits_[c - 1];
 			}
-			digits_ >> 1;
+			digits_ = digits_ >> 1;
 			digits_[digits_.size() - 1] = ret_xor;
 			s.push(digits_[0]);
 		}
@@ -93,9 +100,9 @@ namespace Generator {
 	}
 
 	void Register::startTest() {
-		std::thread t1(corrTest, this);
-		std::thread t2(serialTest, this);
-		std::thread t3(pokerTest, this);
+		std::thread t1([&](){serialTest();});
+		std::thread t2([&](){corrTest();});
+		std::thread t3([&](){pokerTest();});
 		t1.join();
 		t2.join();
 		t3.join();

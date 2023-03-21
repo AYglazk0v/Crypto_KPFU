@@ -9,6 +9,8 @@
 #include <mutex>
 
 namespace Generator {
+	
+	static std::mutex mtx_;
 	namespace Cypher {
 		void encrypt(boost::dynamic_bitset<> MSeq_, std::string);
         std::vector<u_char> readFileBin(std::string filename);
@@ -19,7 +21,6 @@ namespace Generator {
 			std::vector<int> polynome_;
 			boost::dynamic_bitset<> digits_;
 			boost::dynamic_bitset<> MSeq_;
-			static std::mutex mtx_;
 
 		public:
 			Register(int argc, char** argv);
@@ -42,9 +43,9 @@ namespace Generator {
 			void MSeq4File(std::string);
 
 		private:
-			static void serialTest(const Register& r);
-			static void pokerTest(const Register& r);
-			static void corrTest(const Register& r);
+			void serialTest();
+			void pokerTest();
+			void corrTest();
 
 		private:
 			void crutches();

@@ -1,4 +1,7 @@
-#include "../../inc/namespaces.hpp"
+#include "../inc/namespaces.hpp"
+#include <iterator>
+#include <mutex>
+#include <sstream>
 
 namespace Generator {
     
@@ -17,7 +20,7 @@ namespace Generator {
                 boost::dynamic_bitset<> st_MSeq_;
                 int                     st_k_;
 
-                umap<int, int>          st_Mseries_;
+                std::map<int, int>      st_Mseries_;
                 umap<int, double>       st_Mfreq_;
                 double                  st_hi_;
                 size_t                  st_n_;
@@ -32,47 +35,46 @@ namespace Generator {
 
                 ~sTest() {};
 
-                void run(double alpha, std::mutex& mtx_) const {
+                void run(double alpha) const {
+                    std::stringstream s;
 
-                    std::lock_guard<std::mutex> lock(mtx_);
-                    std::cout << "____________________________\n";
-                    std::cout << "_______SERIAL_TEST__________\n";
-                    std::cout << "____________________________\n";
-                    std::cout << "___ЭМПИРИЧЕСКИЕ_ЧАСТОТЫ_____\n";
+                    s << "____________________________\n";
+                    s << "_______SERIAL_TEST__________\n";
+                    s << "____________________________\n";
+                    s << "___ЭМПИРИЧЕСКИЕ_ЧАСТОТЫ_____\n";
                     for (auto&& curr : st_Mseries_) {
-                        printIntToK(curr.first);
-                        std::cout << " " << curr.second << '\n';
+                        for (int i = st_k_; i != 0; --i) {
+                            s << (curr.first >> (i - 1) & 1);
+                        }
+                        s << " " << curr.second << '\n';
                     }
-                    std::cout << "_____ЭТАЛОННАЯ_ЧАСТОТА______\n";
-                    std::cout << "N_t =" << st_n_t_ << '\n';
-                    std::cout << "________Критерий_Hi^2_______\n";
-                    std::cout << "Hi^2 =" << st_hi_ << '\n';
-                    std::cout << "____________________________\n";
+                    s << "_____ЭТАЛОННАЯ_ЧАСТОТА______\n";
+                    s << "N_t = " << st_n_t_ << '\n';
+                    s << "________Критерий_Hi^2_______\n";
+                    s << "Hi^2 = " << st_hi_ << '\n';
+                    s << "____________________________\n";
                     if (alpha == 0) {
                         double Hi_min = criticalHi[st_k_][0.1];
                         double Hi_max = criticalHi[st_k_][0.9];
                         if (Hi_max <= st_hi_ && Hi_min >= st_hi_) {
-                            std::cout << "_____SERIAL_TEST_PASSED!____\n";
+                            s << "_____SERIAL_TEST_PASSED!____\n";
                         } else {
-                            std::cout << "_____SERIAL_TEST_FAILED!____\n";
+                            s << "_____SERIAL_TEST_FAILED!____\n";
                         }
                     } else {
                         double Hi_min = criticalHi[st_k_][alpha];
                         if (Hi_min >= st_hi_) {
-                            std::cout << "_____SERIAL_TEST_PASSED!____\n";
+                            s << "_____SERIAL_TEST_PASSED!____\n";
                         } else {
-                            std::cout << "_____SERIAL_TEST_FAILED!____\n";
+                            s << "_____SERIAL_TEST_FAILED!____\n";
                         }
                     }
+                    s << "____________________________\n\n";
+                    std::lock_guard<std::mutex> lock(Generator::mtx_);
+                    std::cout << s.str();
                 }
 
             private:
-
-                void printIntToK(int curr) const {
-                    for (int i = st_k_; i != 0; --i) {
-                        std::cout << (curr >> (i - 1) & 1);
-                    }
-                }
 
                 void countSeries() {
                     while (st_MSeq_.size() % st_k_ != 0) {
@@ -93,9 +95,9 @@ namespace Generator {
                 }
 
                 void countNs() {
-                    st_n_t_ = st_n_ / std::pow(2, st_k_);
+                    st_n_t_ = (0.0 + st_n_) / std::pow(2, st_k_);
                     for (auto&& curr : st_Mseries_){
-                        st_hi_ += std::pow(curr.second - st_n_t_, 2) / st_n_t_;
+                        st_hi_ += (0.0 + std::pow(0.0 + curr.second - st_n_t_, 2)) / st_n_t_;
                     }
                 }
 
@@ -103,9 +105,9 @@ namespace Generator {
 
     }; //namespace Serialtest
 
-    void Register::serialTest(const Register& r) {
-        Serialtest::sTest tmp{r.MSeq_, r.settings_.getSerialK()};
-        tmp.run(r.settings_.getSerialAlpha(), mtx_);
+    void Register::serialTest() {
+        Serialtest::sTest tmp{MSeq_, settings_.getSerialK()};
+        tmp.run(settings_.getSerialAlpha());
     };
 
 }//namespace Generator

@@ -1,6 +1,7 @@
 #include "../inc/namespaces.hpp"
 #include <algorithm>
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
+#include <cstddef>
 #include <fstream>
 #include <vector>
 
@@ -62,9 +63,8 @@ namespace Generator {
                 }
 
                 size_t i = 0;
-                while (src.size() != key.size()){
+                while (src.size() > key.size()){
                     key.push_back(key[i]);
-                    ++i;
                 }
 
                 std::vector<u_char> enctypted = perfomingXOR(src, key, "encrypted.txt");
