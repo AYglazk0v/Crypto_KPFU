@@ -1,4 +1,4 @@
-NAME		=	lab1
+NAME		=	lab2
 
 CC			=	gcc -lstdc++ -pthread -lm -lboost_program_options -std=c++20 -O2
 CFLAGS		=	-Wall -Werror -Wextra
