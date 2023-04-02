@@ -2,7 +2,9 @@
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
+#include <cmath>
 #include <iterator>
+#include <math.h>
 #include <set>
 #include <stack>
 #include <thread>
@@ -64,9 +66,8 @@ namespace Generator {
 		std::set<boost::dynamic_bitset<>> findContain;
 		std::stack<bool> s;
 		int ret_xor;
-		
 		s.push(digits_[0]);
-		while (findContain.count(digits_) == 0) {
+		while (findContain.count(digits_) == 0 && s.size() != 1000001) {
 			findContain.insert(digits_);
 			bool ret_xor = 0;
 			for (auto c : polynome_){
@@ -75,8 +76,7 @@ namespace Generator {
 			digits_ = digits_ >> 1;
 			digits_[digits_.size() - 1] = ret_xor;
 			s.push(digits_[0]);
-		}
-		
+		}	
 		while (!s.empty()) {
 			MSeq_.push_back(s.top());
 			s.pop();
