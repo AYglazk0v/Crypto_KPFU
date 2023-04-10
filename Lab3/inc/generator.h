@@ -28,6 +28,7 @@ class KeyGenerator {
             n_ = p_ * q_;
             phi_ = (q_ - 1) * (p_ - 1);
             choose_e();
+            // std::cout << "orig p: " << p_ << "\norig q: " << q_ << '\n';
             mpz_invert(d_.get_mpz_t(), e_.get_mpz_t(), phi_.get_mpz_t());
             gmp_randclear(state);
         }
@@ -43,6 +44,9 @@ class KeyGenerator {
 
         void encrypt_str(const std::string &s_pl_file, const std::string& pub_file);
         void decrypt_str(const std::string &s_enc_file, const std::string& pvt_file);
+        
+
+
 
     private:
         void choose_e() {
