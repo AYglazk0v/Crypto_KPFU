@@ -1,6 +1,7 @@
 #include "inc/generator.h"
 #include "inc/prsParam.h"
 #include <cmath>
+#include <ios>
 
 void KeyGenerator::encrypt_str(const std::string &s_pl_file, const std::string& s_pub_file) {
     std::ofstream enc("encrypted.txt");
@@ -36,7 +37,7 @@ void KeyGenerator::encrypt_str(const std::string &s_pl_file, const std::string& 
         }
         M = convertStingToNum(tmp);
         mpz_powm(enc_data.get_mpz_t(), M.get_mpz_t(), e_.get_mpz_t(), n_.get_mpz_t());
-        enc << enc_data << " ";
+        // enc << std::hex << enc_data << " ";
         tmp = "";
     }
     enc.close();
