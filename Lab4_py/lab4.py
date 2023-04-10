@@ -47,6 +47,7 @@ def MD4(R, fl):
     N = len(R)
 
     A, B, C, D = 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476
+#    A, B, C, D = 0x67452302, 0xefcdab99, 0x98badffe, 0x10325476
     X = [0] * 16
 
     for i in range(0, N):
@@ -150,8 +151,18 @@ if __name__ == '__main__':
     elif (task == 2):
         binary = stringToBinary(input('input str: '))
         hash = getHash(binary,0)
-        Task2(binary, 1,hash)
+        count_sym = int(input('count add 1: '))
+        Task2(binary, count_sym ,hash)
     elif (task == 3):
         Task3()
     elif (task == 4):
         Task4()
+    elif (task == 6):
+        L = int(input('L='))
+        w = generateString(L)
+        b = stringToBinary(w)
+        start = time.time()
+        hash = getHash(b,0)
+        stop = time.time()
+        print(f'h: {hash}')
+        print(f'time: {stop - start}')
